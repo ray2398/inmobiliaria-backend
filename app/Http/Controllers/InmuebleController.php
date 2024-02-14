@@ -14,7 +14,8 @@ class InmuebleController extends Controller
      */
     public function index()
     {
-        //
+        $inmuebles = Inmueble::all();
+        return response()->json($inmuebles);
     }
 
     /**
