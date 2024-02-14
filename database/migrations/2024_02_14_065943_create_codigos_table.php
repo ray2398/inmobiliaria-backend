@@ -15,6 +15,9 @@ class CreateCodigosTable extends Migration
     {
         Schema::create('codigos', function (Blueprint $table) {
             $table->id();
+            $table->integer('codigo');
+            $table->unsignedBigInteger('inmueble_id');
+            $table->foreign('inmueble_id')->references('id')->on('inmuebles')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

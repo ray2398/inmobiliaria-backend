@@ -15,6 +15,10 @@ class CreateMovimientosTable extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('inmueble_id');
+            $table->foreign('inmueble_id')->references('id')->on('inmuebles')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

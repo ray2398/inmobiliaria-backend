@@ -15,6 +15,13 @@ class CreateInmueblesTable extends Migration
     {
         Schema::create('inmuebles', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->longText('direccion');
+            $table->string('imagen');
+            $table->longText('descripcion');
+            $table->string('movimiento', 1);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

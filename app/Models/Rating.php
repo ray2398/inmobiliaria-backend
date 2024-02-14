@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Rating extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'inicio_rating', 'inmueble_id'
+    ];
+
+    public function inmueble()
+    {
+        return $this->belongsTo(Inmueble::class, 'inmueble_id');
+    }
 }
