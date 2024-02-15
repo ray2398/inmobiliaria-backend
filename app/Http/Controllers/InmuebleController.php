@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inmueble;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Validator;
 
 class InmuebleController extends Controller
 {
@@ -51,7 +52,29 @@ class InmuebleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'description' => 'required|string',
+            'movimiento' => 'required',
+        ]);
+
+        //Devolvemos un error de validación en caso de fallo en las verificaciones
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 422);
+        }
+
+        $inmueble = Inmueble::create([
+            'nombre' => $data['nombre'],
+            'direccion' => $data['direccion'],
+            'descripcion' => $data['description'],
+            'imagen' => 'https://img.freepik.com/vector-gratis/hermosa-casa_24877-50819.jpg',
+            'movimiento' => $data['movimiento'],
+            'user_id' => $data['user_id'],
+        ]);
+
+        return response()->json(['message' => 'Inmueble Creado']);
     }
 
     /**
@@ -89,9 +112,29 @@ class InmuebleController extends Controller
      * @param  \App\Models\Inmueble  $inmueble
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Inmueble $inmueble)
+    public function update(Request $request, $inmueble)
     {
-        //
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'nombre' => 'required|string|max:255',
+            'direccion' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'movimiento' => 'required',
+        ]);
+
+        //Devolvemos un error de validación en caso de fallo en las verificaciones
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 422);
+        }
+
+        $inmueble = Inmueble::find($inmueble);
+        $inmueble->nombre = $data['nombre'];
+        $inmueble->direccion = $data['direccion'];
+        $inmueble->descripcion = $data['descripcion'];
+        $inmueble->movimiento = $data['movimiento'];
+        $inmueble->save();
+
+        return response()->json(['message' => 'Inmueble Editado']);
     }
 
     /**
@@ -102,6 +145,10 @@ class InmuebleController extends Controller
      */
     public function destroy(Inmueble $inmueble)
     {
-        //
+        $inmueble->delete();
+
+        return response()->json([
+            'message'=>'Inmueble Eliminado!!'
+        ]);
     }
 }
