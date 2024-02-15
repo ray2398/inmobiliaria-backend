@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Inmueble;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InmuebleController extends Controller
 {
+    public function pdf($inmueble){
+        $inmueble = Inmueble::where('id', $inmueble)->first();
+        $pdf = PDF::loadView('exports.pdf.inmueble', compact('inmueble'));
+        $pdf->seTPaper("A4");
+        return $pdf->download('Inmueble.pdf');
+
+    }
+
+    public function own($id)
+    {
+        $inmuebles = Inmueble::where('user_id', $id)->get();
+        return response()->json($inmuebles);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,9 +60,15 @@ class InmuebleController extends Controller
      * @param  \App\Models\Inmueble  $inmueble
      * @return \Illuminate\Http\Response
      */
-    public function show(Inmueble $inmueble)
+    public function show($inmueble)
     {
-        //
+        $inmueble = Inmueble::find($inmueble);
+  
+        if (is_null($inmueble)) {
+            return response()->json(['error' => 'Inmueble no encontrado.'], 500);
+        }
+   
+        return response()->json($inmueble);
     }
 
     /**

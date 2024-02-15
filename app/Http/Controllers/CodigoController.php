@@ -44,9 +44,17 @@ class CodigoController extends Controller
      * @param  \App\Models\Codigo  $codigo
      * @return \Illuminate\Http\Response
      */
-    public function show(Codigo $codigo)
+    public function show($inmueble)
     {
-        //
+        $key = '';
+        $pattern = '1234567890';
+        $max = strlen($pattern)-1;
+        for($i=0;$i < 6;$i++) $key .= $pattern{mt_rand(0,$max)};
+        $codigo = new Codigo;
+        $codigo->codigo = $key;
+        $codigo->inmueble_id = $inmueble;
+        $codigo->save();
+        return response()->json($codigo);
     }
 
     /**
@@ -55,9 +63,13 @@ class CodigoController extends Controller
      * @param  \App\Models\Codigo  $codigo
      * @return \Illuminate\Http\Response
      */
-    public function edit(Codigo $codigo)
+    public function edit($codigo)
     {
-        //
+        $codigo = Codigo::where('codigo', $codigo)->first();
+        if (is_null($codigo)) {
+            return response()->json(['error' => 'Código inválido'], 500);
+        }
+        return response()->json(['message' => 'Código válido']);
     }
 
     /**
