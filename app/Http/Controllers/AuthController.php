@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -35,6 +36,14 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $cookie = cookie('token', $token, 60 * 24); // 1 day
+
+        
+        $email = $data['email'];
+        $dataS = [];
+        Mail::send('emails.notificacion', $dataS, function ($message) use($email) {
+            $message->from('inmobiliaria@gmail.com', 'Inmobiliaria');
+            $message->to($email)->subject('Bienvenido(a)');
+        });
 
         return response()->json([
             'user' => $user,
